@@ -1,11 +1,12 @@
 from typing import Tuple, Union, List
-import numpy as np
+
 from src.helpers import *
 
 
 class Environment:
     def __init__(self, size: Tuple[int, int]):
         self.size = size
+        self.empty_fields = []
         self.fields = self._make_fields()
 
     def _make_fields(self):
@@ -13,18 +14,25 @@ class Environment:
         for i in range(self.size[0]):
             col_list = []
             for j in range(self.size[1]):
+                self.empty_fields.append((i, j))
                 col_list.append(Field((i, j)))
             field_list.append(col_list)
         return np.array(field_list)
 
 
 class Agent:
-
     environment = None
+    n_agents = 0
+    agent_list = []
 
     @classmethod
     def set_environment(cls, environment: Environment):
         cls.environment = environment
+
+    @classmethod
+    def put_agents_randomly(cls):
+        # TODO got to here
+        pass
 
     def __init__(self, coords: Tuple[int, int], talent: float = None, capital: int = 10):
         self.coords = coords
@@ -33,14 +41,20 @@ class Agent:
         self.lucky_events_encountered = 0
         self.lucky_events_exploited = 0
         self.unlucky_events_encountered = 0
+        self.id = Agent.n_agents
+        Agent.environment.empty_fields.remove(self.coords)
+        Agent.n_agents += 1
         Agent.environment.fields[coords].occupants.append(self)
+        Agent.agent_list.append(self)
+
+    def __str__(self):
+        return f"Agent{self.id} at {self.coords}"
 
     def __repr__(self):
-        return f"Agent coords: {self.coords}, capital: {self.capital}, talent: {self.talent}"
+        return f"Agent{self.id} at {self.coords}, capital: {self.capital}, talent: {self.talent}"
 
 
 class Event:
-
     environment = None
 
     @classmethod
@@ -52,8 +66,11 @@ class Event:
         self.type = type
         Event.environment.fields[coords].occupants.append(self)
 
+    def __str__(self):
+        return f"{self.type.title()} event at: {self.coords}"
+
     def __repr__(self):
-        return f"Event coords: {self.coords}, type: {self.type}"
+        return f"{self.type.title()} event at: {self.coords}"
 
     @staticmethod
     def _can_move_to_field(coords: Tuple[int, int]):
@@ -87,7 +104,6 @@ class Event:
         else:
             agent.capital = agent.capital / 2
             agent.unlucky_events_encountered += 1
-
 
 
 class Field:
