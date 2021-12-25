@@ -1,25 +1,37 @@
-from src.core import Environment, Agent, Event
+import numpy as np
 
-env = Environment(size=(5, 5))
+from src.core import Environment, Agent, Event
+from src.helpers import print_agent_stats
+import matplotlib.pyplot as plt
+
+env = Environment(size=(30, 30))
 
 # configure the environment for the agents and events to be the one we just created
 Agent.set_environment(env)
 Event.set_environment(env)
 
-# put some agents on the board
-agent1 = Agent((0, 0))
-agent2 = Agent((1, 1))
-agent3 = Agent((2, 2))
+# put agents and events on the environment
+Agent.put_agents_randomly(100)
+Event.put_events_randomly(50, event_type="lucky")
+Event.put_events_randomly(50, event_type="unlucky")
 
-# ... and some events
-event1 = Event((0, 1), "lucky")
+# [event.random_move() for event in Event.event_list]
 
-for i in range(300):
-    event1.random_move()
+# # start the simulation by letting the lucky and unlucky events move around the environment
+for years in range(1, 81):
+    env.iterations_elapsed += 1
+    [event.random_move() for event in Event.event_list]
 
-print([x.capital for x in [agent1, agent2, agent3]])
-agent3.lucky_events_encountered
-agent3.lucky_events_exploited
+capital = [agent.capital for agent in Agent.agent_list]
 
-Agent.n_agents
-Agent.agent_list
+# plt.hist(capital, bins=30)
+# plt.show()
+
+idx_high = np.argmax(capital)
+idx_low = np.argmin(capital)
+
+print(f"============\nRichest agent stats: ")
+print_agent_stats(Agent.agent_list[idx_high])
+
+print(f"============\nPoorest agent stats: ")
+print_agent_stats(Agent.agent_list[idx_low])
