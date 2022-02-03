@@ -34,10 +34,8 @@ def main():
     Event.put_events_randomly(args.num_lucky_events, event_type="lucky")
     Event.put_events_randomly(args.num_unlucky_events, event_type="unlucky")
 
-    # [event.random_move() for event in Event.event_list]
-
     # start the simulation by letting the lucky and unlucky events move around the environment
-    for half_years in range(1, 2*args.num_years):
+    for half_years in range(1, 2 * args.num_years):
         env.iterations_elapsed += 1
         [event.random_move() for event in Event.event_list]
 
