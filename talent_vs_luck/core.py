@@ -1,17 +1,25 @@
 import random
 from typing import Dict, List, Tuple, Union
 
-from talent_vs_luck.helpers import *
+import numpy as np
+
+from talent_vs_luck.helpers import (add_tuples,
+                                    draw_normal_sample_in_unit_interval)
 
 
 class Environment:
+    """
+    Sets up the simulation landscape.
+
+    """
+
     def __init__(self, size: Tuple[int, int]):
         self.size = size
         self.empty_fields = []
         self.fields = self._make_fields()
         self.iterations_elapsed = 0
 
-    def _make_fields(self):
+    def _make_fields(self) -> np.ndarray:
         field_list = []
         for i in range(self.size[0]):
             col_list = []
@@ -23,6 +31,11 @@ class Environment:
 
 
 class Agent:
+    """
+    Handles people/agents acting in the simulation environment.
+
+    """
+
     environment = None
     n_agents = 0
     agent_list = []
@@ -52,14 +65,18 @@ class Agent:
         Agent.environment.fields[coords].occupants.append(self)
         Agent.agent_list.append(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Agent{self.id} at {self.coords}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Agent{self.id} at {self.coords}, capital: {self.capital}, talent: {self.talent}"
 
 
 class Event:
+    """
+    Handles lucky and unlucky events (opportunities and misfortune) for the agents in the environment.
+    """
+
     environment = None
     event_list = []
 
@@ -82,14 +99,14 @@ class Event:
         Event.environment.empty_fields.remove(self.coords)
         Event.event_list.append(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.type.title()} event at: {self.coords}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.type.title()} event at: {self.coords}"
 
     @staticmethod
-    def _can_move_to_field(coords: Tuple[int, int]):
+    def _can_move_to_field(coords: Tuple[int, int]) -> bool:
         inside_bounds = 0 <= coords[0] < Event.environment.size[0] and 0 <= coords[1] < Event.environment.size[1]
         if not inside_bounds:
             return False
@@ -114,18 +131,12 @@ class Event:
         if self.type == "lucky":
             agent_exploits_opportunity = float(np.random.random(1)) < agent.talent
             agent.capital = 2 * agent.capital if agent_exploits_opportunity else agent.capital
-            # agent.lucky_events_encountered["count"] += 1
-            # agent.lucky_events_encountered["when"].append(Event.environment.iterations_elapsed)
             self._add_event_to_agent_event_dicts(agent.lucky_events_encountered)
             if agent_exploits_opportunity:
                 self._add_event_to_agent_event_dicts(agent.lucky_events_exploited)
-                # agent.lucky_events_exploited["count"] += 1
-                # agent.lucky_events_exploited["when"].append(Event.environment.iterations_elapsed)
         else:
             agent.capital = agent.capital / 2
             self._add_event_to_agent_event_dicts(agent.unlucky_events_encountered)
-            # agent.unlucky_events_encountered["count"] += 1
-            # agent.unlucky_events_encountered["when"].append(Event.environment.iterations_elapsed)
 
     @staticmethod
     def _add_event_to_agent_event_dicts(agent_dict: Dict):
@@ -134,9 +145,14 @@ class Event:
 
 
 class Field:
+    """
+    Handles single fields in the environment.
+
+    """
+
     def __init__(self, coords: Tuple[int, int] = None, occupants: List[Union[Agent, Event, None]] = None):
         self.occupants = occupants if isinstance(occupants, list) else []
         self.coords = coords
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Field coords: {self.coords}, occupied by: {self.occupants}"

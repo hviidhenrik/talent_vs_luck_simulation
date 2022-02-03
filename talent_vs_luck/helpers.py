@@ -1,11 +1,13 @@
+from typing import Tuple
+
 import numpy as np
 
 
-def add_tuples(tuple1, tuple2):
+def add_tuples(tuple1: Tuple[float, float], tuple2: Tuple[float, float]) -> Tuple[float, float]:
     return tuple(np.add(tuple1, tuple2))
 
 
-def draw_normal_sample_in_unit_interval(loc: float = 0.6, scale: float = 0.1):
+def draw_normal_sample_in_unit_interval(loc: float = 0.6, scale: float = 0.1) -> float:
     return np.round(float(max(min(np.random.normal(loc, scale, size=1), 1), 0)), 3)
 
 

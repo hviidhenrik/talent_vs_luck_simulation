@@ -9,7 +9,7 @@ from talent_vs_luck.helpers import print_agent_stats
 plt.style.use("seaborn")
 
 
-def get_args():
+def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run agent based simulation of talent vs luck")
     parser.add_argument("--board-size", default=30, type=int)
     parser.add_argument("--num-agents", default=100, type=int)
