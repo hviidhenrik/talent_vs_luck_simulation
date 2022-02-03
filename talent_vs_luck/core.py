@@ -1,7 +1,7 @@
-from typing import Tuple, Union, List, Dict
 import random
+from typing import Dict, List, Tuple, Union
 
-from src.helpers import *
+from talent_vs_luck.helpers import *
 
 
 class Environment:

@@ -1,11 +1,11 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
-    name='phd-package-name', # should not be the same name as the root folder
+    name='talent-vs-luck-sim',  # should not be the same name as the root folder
     version='0.1.0',
     description='Package with helper functions for PdM analysis',
     author='Henrik Hviid Hansen',
-    author_email='hehha@orsted.dk',
+    author_email='hviidhenrik@outlook.com',
     classifiers=["Programming Language :: Python :: 3", "Operating System :: OS Independent", ],
     packages=find_packages(),
 )
